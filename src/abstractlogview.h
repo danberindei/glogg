@@ -226,6 +226,8 @@ class AbstractLogView :
     void markLine( qint64 line );
     // Sent up when the user wants to add the selection to the search
     void addToSearch( const QString& selection );
+    // Sent up when the user wants to replace the search expression with the selection
+    void replaceSearch( const QString& selection );
     // Sent up when the mouse is hovered over a line's margin
     void mouseHoveredOverLine( qint64 line );
     // Sent up when the mouse leaves a line's margin
@@ -279,6 +281,7 @@ class AbstractLogView :
   private slots:
     void handlePatternUpdated();
     void addToSearch();
+    void replaceSearch();
     void findNextSelected();
     void findPreviousSelected();
     void copy();
@@ -353,6 +356,7 @@ class AbstractLogView :
     QAction* findNextAction_;
     QAction* findPreviousAction_;
     QAction* addToSearchAction_;
+    QAction* replaceSearchAction_;
 
     // Pointer to the CrawlerWidget's QFP object
     const QuickFindPattern* const quickFindPattern_;

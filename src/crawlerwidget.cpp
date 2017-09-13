@@ -580,12 +580,29 @@ void CrawlerWidget::addToSearch( const QString& string )
 {
     QString text = searchLineEdit->currentText();
 
+    // Escape the regexp chars from the string before adding it.
     if ( text.isEmpty() )
-        text = string;
+        text = QRegularExpression::escape( string );
     else {
-        // Escape the regexp chars from the string before adding it.
         text += ( '|' + QRegularExpression::escape( string ) );
     }
+
+    searchLineEdit->setEditText( text );
+
+    // Set the focus to lineEdit so that the user can press 'Return' immediately
+    searchLineEdit->lineEdit()->setFocus();
+}
+
+void CrawlerWidget::replaceSearch( const QString& string )
+{
+    QString text = searchLineEdit->currentText();
+
+    std::shared_ptr<Configuration> config =
+        Persistent<Configuration>( "settings" );
+    if ( config->mainRegexpType() != ExtendedRegexp )
+        text = string;
+    else
+        text = QRegularExpression::escape( string );
 
     searchLineEdit->setEditText( text );
 
@@ -787,6 +804,10 @@ void CrawlerWidget::setup()
             this, SLOT( addToSearch( const QString& ) ) );
     connect(filteredView, SIGNAL( addToSearch( const QString& ) ),
             this, SLOT( addToSearch( const QString& ) ) );
+    connect(logMainView, SIGNAL( replaceSearch( const QString& ) ),
+            this, SLOT( replaceSearch( const QString& ) ) );
+    connect(filteredView, SIGNAL( replaceSearch( const QString& ) ),
+            this, SLOT( replaceSearch( const QString& ) ) );
 
     connect(filteredView, SIGNAL( mouseHoveredOverLine( qint64 ) ),
             this, SLOT( mouseHoveredOverMatch( qint64 ) ) );

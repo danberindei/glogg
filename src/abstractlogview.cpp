@@ -371,11 +371,13 @@ void AbstractLogView::mousePressEvent( QMouseEvent* mouseEvent )
             findNextAction_->setEnabled( true );
             findPreviousAction_->setEnabled( true );
             addToSearchAction_->setEnabled( true );
+            replaceSearchAction_->setEnabled( true );
         }
         else {
             findNextAction_->setEnabled( false );
             findPreviousAction_->setEnabled( false );
             addToSearchAction_->setEnabled( false );
+            replaceSearchAction_->setEnabled( false );
         }
 
         // "Add to search" only makes sense in regexp mode
@@ -969,7 +971,7 @@ void AbstractLogView::handlePatternUpdated()
     update();
 }
 
-// OR the current with the current search expression
+// OR the current selection with the current search expression
 void AbstractLogView::addToSearch()
 {
     if ( selection_.isPortion() ) {
@@ -978,6 +980,18 @@ void AbstractLogView::addToSearch()
     }
     else {
         LOG(logERROR) << "AbstractLogView::addToSearch called for a wrong type of selection";
+    }
+}
+
+// Replace the current search expression with the current selection
+void AbstractLogView::replaceSearch()
+{
+    if ( selection_.isPortion() ) {
+        LOG(logDEBUG) << "AbstractLogView::replaceSearch()";
+        emit replaceSearch( selection_.getSelectedText( logData ) );
+    }
+    else {
+        LOG(logERROR) << "AbstractLogView::replaceSearch called for a wrong type of selection";
     }
 }
 
@@ -1377,12 +1391,19 @@ void AbstractLogView::createMenu()
     connect( addToSearchAction_, SIGNAL( triggered() ),
             this, SLOT( addToSearch() ) );
 
+    replaceSearchAction_ = new QAction( tr("&Replace search"), this );
+    replaceSearchAction_->setStatusTip(
+            tr("Replace the search expression with the selection") );
+    connect( replaceSearchAction_, SIGNAL( triggered() ),
+            this, SLOT( replaceSearch() ) );
+
     popupMenu_ = new QMenu( this );
     popupMenu_->addAction( copyAction_ );
     popupMenu_->addSeparator();
     popupMenu_->addAction( findNextAction_ );
     popupMenu_->addAction( findPreviousAction_ );
     popupMenu_->addAction( addToSearchAction_ );
+    popupMenu_->addAction( replaceSearchAction_ );
 }
 
 void AbstractLogView::considerMouseHovering( int x_pos, int y_pos )

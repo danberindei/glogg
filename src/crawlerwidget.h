@@ -174,6 +174,8 @@ class CrawlerWidget : public QSplitter,
 
     // Called when the user add the string to the search
     void addToSearch( const QString& string );
+    // Called when the user replaces the search with the string
+    void replaceSearch( const QString& string );
 
     // Called when a match is hovered on in the filtered view
     void mouseHoveredOverMatch( qint64 line );
