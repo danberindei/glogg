@@ -714,7 +714,7 @@ void CrawlerWidget::setup()
     searchRefreshCheck = new QCheckBox( "Auto-&refresh" );
 
     // Construct the Search line
-    searchLabel = new QLabel(tr("&Text: "));
+    searchLabel = new QLabel(tr("Te&xt: "));
     searchLineEdit = new QComboBox;
     searchLineEdit->setEditable( true );
     searchLineEdit->setCompleter( 0 );
